@@ -1,2 +1,4 @@
 #### What's Improved
-- Updated the "Unblock IP Address" action with pagination support 
+- Added following configuration parameters
+  - Session Details: Session parameters required to set before publish.
+  - Policy Package: Policy package name to be installed after publish.

@@ -2,12 +2,12 @@
   "name": "checkpoint-firewall",
   "label": "Check Point Firewall",
   "description": "Check Point Firewall that can use for block/unblock IP, Application, URL",
-  "publisher": "Community",
+  "publisher": "Fortinet",
   "cs_approved": false,
   "cs_compatible": true,
-  "version": "1.2.0",
+  "version": "2.0.0",
   "category": "firewall",
-  "help_online": "https://docs.fortinet.com/document/fortisoar/1.2.0/check-point-firewall/385/check-point-firewall-v1-2-0",
+  "help_online": "https://docs.fortinet.com/document/fortisoar/2.0.0/check-point-firewall/747/check-point-firewall-v2-0-0",
   "icon_small_name": "CheckPoint_32X32.png",
   "icon_large_name": "CheckPoint_80X80.png",
   "configuration": {
@@ -19,7 +19,8 @@
         "visible": true,
         "type": "text",
         "name": "address",
-        "description": "IP address or Hostname of the Check Point Firewall server to which you will connect and perform automated operations."
+        "description": "IP address or Hostname of the Check Point Firewall server to which you will connect and perform automated operations.",
+        "tooltip": "IP address or Hostname of the Check Point Firewall server to which you will connect and perform automated operations."
       },
       {
         "title": "Port",
@@ -28,7 +29,8 @@
         "visible": true,
         "type": "integer",
         "name": "port",
-        "description": "Port number used for connecting to the Check Point Firewall server."
+        "description": "Port number used for connecting to the Check Point Firewall server.",
+        "tooltip": "Port number used for connecting to the Check Point Firewall server."
       },
       {
         "title": "Username",
@@ -37,7 +39,8 @@
         "visible": true,
         "type": "text",
         "name": "username",
-        "description": "Username to access the Check Point Firewall server to which you will connect and perform the automated operations."
+        "description": "Username to access the Check Point Firewall server to which you will connect and perform the automated operations.",
+        "tooltip": "Username to access the Check Point Firewall server to which you will connect and perform the automated operations."
       },
       {
         "title": "Password",
@@ -46,7 +49,8 @@
         "visible": true,
         "type": "password",
         "name": "password",
-        "description": "Password to access the Check Point Firewall server to which you will connect and perform the automated operations."
+        "description": "Password to access the Check Point Firewall server to which you will connect and perform the automated operations.",
+        "tooltip": "Password to access the Check Point Firewall server to which you will connect and perform the automated operations."
       },
       {
         "title": "IP Block Policy (Network Group Name)",
@@ -55,7 +59,8 @@
         "visible": true,
         "type": "text",
         "name": "ip_block_policy",
-        "description": "List of the IP Hosts that you have specified in Check Point Firewall for blocking or unblocking IP addresses. See the Blocking or Unblocking IP addresses, URLs, or applications in Check Point Firewall section."
+        "description": "List of the IP Hosts that you have specified in Check Point Firewall for blocking or unblocking IP addresses. See the Blocking or Unblocking IP addresses, URLs, or applications in Check Point Firewall section.",
+        "tooltip": "List of the IP Hosts that you have specified in Check Point Firewall for blocking or unblocking IP addresses."
       },
       {
         "title": "URL Block Policy (Application/Site Name)",
@@ -64,7 +69,8 @@
         "visible": true,
         "type": "text",
         "name": "url_block_policy",
-        "description": "Name of the URL Group that you have specified in Check Point Firewall for blocking or unblocking URLs. See the Blocking or Unblocking IP addresses, URLs, or applications in Check Point Firewall section."
+        "description": "Name of the URL Group that you have specified in Check Point Firewall for blocking or unblocking URLs. See the Blocking or Unblocking IP addresses, URLs, or applications in Check Point Firewall section.",
+        "tooltip": "Name of the URL Group that you have specified in Check Point Firewall for blocking or unblocking URLs."
       },
       {
         "title": "Application Block Policy (Application/Site Group Name)",
@@ -73,17 +79,8 @@
         "visible": true,
         "type": "text",
         "name": "app_block_policy",
-        "description": "Name of the application group that you have specified in Check Point Firewall for blocking or unblocking applications. See the Blocking or Unblocking IP addresses, URLs, or applications in Check Point Firewall section."
-      },
-      {
-        "title": "Verify SSL",
-        "required": false,
-        "editable": true,
-        "visible": true,
-        "type": "checkbox",
-        "name": "verify_ssl",
-        "value": true,
-        "description": "Specifies whether the SSL certificate for the server is to be verified or not.By default, this option is set as True."
+        "description": "Name of the application group that you have specified in Check Point Firewall for blocking or unblocking applications. See the Blocking or Unblocking IP addresses, URLs, or applications in Check Point Firewall section.",
+        "tooltip": "Name of the application group that you have specified in Check Point Firewall for blocking or unblocking applications."
       },
       {
         "title": "Install Policy After Publish",
@@ -93,7 +90,45 @@
         "type": "checkbox",
         "name": "install_policy",
         "value": true,
-        "description": "If you select this option, i.e., set it as True, then the Check Point Firewall connector will install the Policy API immediately after adding or removing items from the policy."
+        "description": "Select this option, i.e., set it to True to install the Policy API immediately after adding or removing items from the policy.",
+        "tooltip": "Select to install the Policy API immediately after adding or removing items from the policy.",
+        "onchange": {
+          "true": [
+            {
+              "title": "Policy Package",
+              "required": false,
+              "editable": true,
+              "visible": true,
+              "type": "text",
+              "value": "Standard",
+              "name": "policy_package",
+              "tooltip": "Specify the policy-package name to be installed after publish. By default it is set to Standard.",
+              "description": "Specify the policy-package name to be installed after publish. By default it is set to Standard."
+            }
+          ]
+        }
+      },
+      {
+        "title": "Session Details",
+        "required": false,
+        "editable": true,
+        "visible": true,
+        "type": "json",
+        "name": "session_details",
+        "value": {},
+        "description": "Specify session parameters required to set before publish. For example: { \"session-description\": \"\"}",
+        "tooltip": "Specify session parameters which is required to set before publish. For example, { \"session-description\": \"\"}"
+      },
+      {
+        "title": "Verify SSL",
+        "required": false,
+        "editable": true,
+        "visible": true,
+        "type": "checkbox",
+        "name": "verify_ssl",
+        "value": true,
+        "description": "Specifies whether the SSL certificate for the server is to be verified. By default, this option is set as True.",
+        "tooltip": "Specifies whether the SSL certificate for the server is to be verified or not."
       }
     ]
   },
@@ -121,7 +156,7 @@
       "parameters": [
         {
           "title": "Start Index",
-          "tooltip": "Skip number of records from result",
+          "tooltip": "Specify Start Index from where you want to retrieve results from Check Point Firewall.",
           "type": "integer",
           "name": "start_index",
           "required": true,
@@ -138,7 +173,8 @@
           "required": true,
           "editable": true,
           "visible": true,
-          "description": "Number of results you want to display. The maximum number of results that can be displayed is 500."
+          "description": "Number of results you want to display. The maximum number of results that can be displayed is 500.",
+          "tooltip": "Number of results you want to display. The maximum number of results that can be displayed is 500."
         }
       ],
       "enabled": true,
@@ -174,7 +210,9 @@
           "required": true,
           "editable": true,
           "visible": true,
-          "description": "IP addresses that you want to block on Check Point Firewall. IP addresses must be in the list or CSV format.For example, [\"X..X.X.X\", \"Y.Y.Y.Y\"]"
+          "placeholder": "e.g, [\"192.168.1.1\", \"10.0.0.1\"]",
+          "description": "IP addresses that you want to unblock on Check Point Firewall. IP addresses must be in the list or CSV format. For example: [\"X.X.X.X\", \"Y.Y.Y.Y\"]",
+          "tooltip": "IP addresses that you want to unblock on Check Point Firewall. IP addresses must be in the list or CSV format."
         }
       ],
       "enabled": true,
@@ -189,12 +227,14 @@
       "parameters": [
         {
           "title": "Application Names (In CSV or List Format)",
+          "tooltip": "List of application names that you want to block on Check Point Firewall. Application names must be in the list format.",
           "type": "text",
           "name": "app_list",
           "required": true,
           "editable": true,
           "visible": true,
-          "description": "List of application names that you want to block on Check Point Firewall. Application names must be in the list format.For example, [\"TeamViewer FileTransfer\", \"TeamViewer Conferencing\"]"
+          "placeholder": "e.g., [\"TeamViewer FileTransfer\", \"TeamViewer Conferencing\"]",
+          "description": "List of application names that you want to block on Check Point Firewall. Application names must be in the list format. For example: [\"TeamViewer FileTransfer\", \"TeamViewer Conferencing\"]"
         }
       ],
       "enabled": true,
@@ -209,12 +249,14 @@
       "parameters": [
         {
           "title": "URLs (In CSV or List Format)",
+          "tooltip": "URLs that you want to unblock on Check Point Firewall. URLs must be in the list or CSV format.",
           "type": "text",
           "name": "url_list",
           "required": true,
           "editable": true,
           "visible": true,
-          "description": "URLs that you want to block on Check Point Firewall. URLs must be in the list or CSV format.For example, [\"www.example1.com\", \"www.example2.com\"]"
+          "placeholder": "e.g. [\"www.example1.com\", \"www.example2.com\"]",
+          "description": "URLs that you want to unblock on Check Point Firewall. URLs must be in the list or CSV format. For example: [\"www.example1.com\", \"www.example2.com\"]"
         }
       ],
       "enabled": true,
@@ -229,12 +271,14 @@
       "parameters": [
         {
           "title": "IP Address (In CSV or List Format)",
+          "tooltip": "IP addresses that you want to unblock on Check Point Firewall. IP addresses must be in the list or CSV format.",
           "type": "text",
           "name": "ip_address_list",
           "required": true,
           "editable": true,
           "visible": true,
-          "description": "IP addresses that you want to unblock on Check Point Firewall. IP addresses must be in the list or CSV format.For example, [\"www.example1.com\", \"www.example2.com\"]"
+          "placeholder": "e.g., [\"192.168.1.1\", \"10.0.0.1\"]",
+          "description": "IP addresses that you want to unblock on Check Point Firewall. IP addresses must be in the list or CSV format. For example: [\"X.X.X.X\", \"Y.Y.Y.Y\"]"
         }
       ],
       "enabled": true,
@@ -254,7 +298,9 @@
           "required": true,
           "editable": true,
           "visible": true,
-          "description": "URLs that you want to unblock on Check Point Firewall. URLs must be in the list or CSV format.For example, [\"www.example1.com\", \"www.example2.com\"]"
+          "placeholder": "[\"www.example1.com\", \"www.example2.com\"]",
+          "description": "URLs that you want to unblock on Check Point Firewall. URLs must be in the list or CSV format. For example: [\"www.example1.com\", \"www.example2.com\"]",
+          "tooltip": "URLs that you want to unblock on Check Point Firewall. URLs must be in the list or CSV format."
         }
       ],
       "enabled": true,
@@ -274,7 +320,9 @@
           "required": true,
           "editable": true,
           "visible": true,
-          "description": "List of application names that you want to block on Check Point Firewall. Application names must be in the list format.For example, [\"TeamViewer FileTransfer\", \"TeamViewer Conferencing\"]"
+          "placeholder": "e.g., [\"TeamViewer FileTransfer\", \"TeamViewer Conferencing\"]",
+          "tooltip": "List of application names that you want to block on Check Point Firewall. Application names must be in the list format.",
+          "description": "List of application names that you want to block on Check Point Firewall. Application names must be in the list format. For example: [\"TeamViewer FileTransfer\", \"TeamViewer Conferencing\"]"
         }
       ],
       "enabled": true,
@@ -349,7 +397,8 @@
           "required": true,
           "editable": true,
           "visible": true,
-          "description": "UID of the session for which you want to retrieve details from Check Point Firewall."
+          "description": "UID of the session that you want to discard on Check Point Firewall.",
+          "tooltip": "Specify UID of the session that you want to discard on Check Point Firewall."
         }
       ],
       "enabled": true,
@@ -386,7 +435,8 @@
           "required": true,
           "editable": true,
           "visible": true,
-          "description": "UID of the session that you want to discard on Check Point Firewall."
+          "description": "UID of the session that you want to discard on Check Point Firewall.",
+          "tooltip": "Specify UID of the session that you want to discard on Check Point Firewall."
         }
       ],
       "enabled": true,

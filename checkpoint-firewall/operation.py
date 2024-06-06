@@ -1,5 +1,5 @@
 """ Copyright start
-  Copyright (C) 2008 - 2022 Fortinet Inc.
+  Copyright (C) 2008 - 2023 Fortinet Inc.
   All rights reserved.
   FORTINET CONFIDENTIAL & FORTINET PROPRIETARY SOURCE CODE
   Copyright end """
@@ -44,6 +44,8 @@ class CheckPointOps:
         self.session = None
         self.status = {}
         self.install_policy = config.get("install_policy", True)
+        self.policy_package = config.get("policy_package") if config.get("policy_package") else "Standard"
+        self.session_details = config.get('session_details')
 
     def __check_show_task(self, task_id):
         try:
@@ -136,6 +138,8 @@ class CheckPointOps:
             else:
                 url = '{0}{1}'.format(self.server_url, rest_api["LOGIN_API"])
                 payload = {'user': self.username, 'password': self.password}
+                if self.session_details:
+                    payload.update(self.session_details)
                 header = {'content-Type': 'application/json'}
                 api_response = requests.post(url, data=json.dumps(payload), headers=header, verify=self.verify_ssl)
                 if api_response.ok:
@@ -294,7 +298,7 @@ class CheckPointOps:
     def __install_policy(self):
         try:
             url = '{0}{1}'.format(self.server_url, rest_api["INSTALL_POLICY"])
-            payload = {"access": True, "policy-package": "Standard"}
+            payload = {"access": True, "policy-package": self.policy_package}
             time_out = 300
             time_interval = 10
             while True:
@@ -378,6 +382,7 @@ class CheckPointOps:
         except Exception as Err:
             logger.exception("Fail: {}".format(str(Err)))
             raise ConnectorError(Err)
+
 
     def discard_session(self, config, params):
         try:
