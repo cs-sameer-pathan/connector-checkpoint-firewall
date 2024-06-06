@@ -1,11 +1,12 @@
 """ Copyright start
-  Copyright (C) 2008 - 2022 Fortinet Inc.
+  Copyright (C) 2008 - 2023 Fortinet Inc.
   All rights reserved.
   FORTINET CONFIDENTIAL & FORTINET PROPRIETARY SOURCE CODE
   Copyright end """
 from connectors.core.connector import Connector, get_logger, ConnectorError
 from .operation import CheckPointOps
 logger = get_logger('checkpoint-firewall')
+
 
 class CheckPoint(Connector):
     def execute(self, config, operation, params, **kwargs):
@@ -34,7 +35,6 @@ class CheckPoint(Connector):
             logger.info('Unsupported operation [{}]'.format(operation))
             raise ConnectorError('Unsupported operation')
         result = operation(config, params)
-        logout = checkpoint.logout()
         return result
 
     def check_health(self, config):
