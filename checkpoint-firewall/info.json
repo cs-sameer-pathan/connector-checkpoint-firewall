@@ -5,9 +5,9 @@
   "publisher": "Fortinet",
   "cs_approved": false,
   "cs_compatible": true,
-  "version": "2.0.0",
+  "version": "2.1.0",
   "category": "firewall",
-  "help_online": "https://docs.fortinet.com/document/fortisoar/2.0.0/check-point-firewall/747/check-point-firewall-v2-0-0",
+  "help_online": "",
   "icon_small_name": "CheckPoint_32X32.png",
   "icon_large_name": "CheckPoint_80X80.png",
   "configuration": {
@@ -107,6 +107,16 @@
             }
           ]
         }
+      },
+      {
+        "title": "Domain",
+        "required": false,
+        "editable": true,
+        "visible": true,
+        "type": "text",
+        "name": "domain",
+        "description": "Specify domain name or ID to login to specific domain.",
+        "tooltip": "Specify domain name or ID to login to specific domain."
       },
       {
         "title": "Session Details",

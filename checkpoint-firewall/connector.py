@@ -1,8 +1,9 @@
-""" Copyright start
-  Copyright (C) 2008 - 2023 Fortinet Inc.
-  All rights reserved.
-  FORTINET CONFIDENTIAL & FORTINET PROPRIETARY SOURCE CODE
-  Copyright end """
+"""
+Copyright start
+MIT License
+Copyright (c) 2024 Fortinet Inc
+Copyright end
+"""
 from connectors.core.connector import Connector, get_logger, ConnectorError
 from .operation import CheckPointOps
 logger = get_logger('checkpoint-firewall')
@@ -26,8 +27,8 @@ class CheckPoint(Connector):
             'get_list_of_applications': checkpoint.get_list_of_applications,
             'show_sessions': checkpoint.show_sessions,
             'discard_session': checkpoint.discard_session,
-            'check_policies' : checkpoint.check_policies,
-            'get_session' : checkpoint.get_session
+            'check_policies': checkpoint.check_policies,
+            'get_session': checkpoint.get_session
         }
         logger.info('In execute() Operation:[{}]'.format(operation))
         operation = checkpoint_operations.get(operation, None)

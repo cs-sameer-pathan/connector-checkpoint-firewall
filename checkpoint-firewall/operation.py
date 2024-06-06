@@ -1,8 +1,9 @@
-""" Copyright start
-  Copyright (C) 2008 - 2023 Fortinet Inc.
-  All rights reserved.
-  FORTINET CONFIDENTIAL & FORTINET PROPRIETARY SOURCE CODE
-  Copyright end """
+"""
+Copyright start
+MIT License
+Copyright (c) 2024 Fortinet Inc
+Copyright end
+"""
 import ipaddress, json, time, requests, math
 from connectors.core.connector import get_logger, ConnectorError
 from .constants import rest_api
@@ -45,6 +46,7 @@ class CheckPointOps:
         self.status = {}
         self.install_policy = config.get("install_policy", True)
         self.policy_package = config.get("policy_package") if config.get("policy_package") else "Standard"
+        self.domain = config.get("domain")
         self.session_details = config.get('session_details')
 
     def __check_show_task(self, task_id):
@@ -79,6 +81,7 @@ class CheckPointOps:
                         self.discard_session({}, {})
                         logger.exception("Fail to Install Policy Error is:{}".format(install_policy_response))
                         raise ConnectorError("Fail to Install Policy Error is:{}".format(install_policy_response))
+                return self.status
             else:
                 logger.exception("Fail To Publish Changes Function Time out "
                                  "Error Response is : {}".format(publish_response))
@@ -138,6 +141,8 @@ class CheckPointOps:
             else:
                 url = '{0}{1}'.format(self.server_url, rest_api["LOGIN_API"])
                 payload = {'user': self.username, 'password': self.password}
+                if self.domain:
+                    payload.update({"domain": self.domain})
                 if self.session_details:
                     payload.update(self.session_details)
                 header = {'content-Type': 'application/json'}
@@ -253,12 +258,13 @@ class CheckPointOps:
                 payload = {'uid': ip_address['uid'], 'groups': {"add": self.ip_block_policy}}
                 api_response = self.__get_request(url, payload=payload)
                 if api_response.get('uid'):
+                    message = "Blocked" if self.install_policy else "Submitted"
                     if ip_address.get("ipv4-address"):
-                        self.status.update({str(ip_address["ipv4-address"]): "IP Address Block Successfully"})
+                        self.status.update({str(ip_address["ipv4-address"]): f"IP Address {message} Successfully"})
                     else:
-                        self.status.update({str(ip_address["ipv6-address"]): "IP Address Block Successfully"})
+                        self.status.update({str(ip_address["ipv6-address"]): f"IP Address {message} Successfully"})
                 else:
-                    self.status.update({str(ip_address["ipv6-address"]): "IP Address NOT Block"})
+                    self.status.update({str(ip_address["ipv6-address"]): f"IP Address NOT {message}"})
             return self.status
         except Exception as Err:
             logger.exception("Not Able To Add Host Error is : {}".format(Err))
