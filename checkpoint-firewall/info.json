@@ -115,8 +115,8 @@
         "visible": true,
         "type": "text",
         "name": "domain",
-        "description": "Specify domain name or ID to login to specific domain.",
-        "tooltip": "Specify domain name or ID to login to specific domain."
+        "description": "Specify the domain name or ID to login to the specified domain.",
+        "tooltip": "Specify the domain name or ID to login to the specified domain. "
       },
       {
         "title": "Session Details",
