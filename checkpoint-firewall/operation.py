@@ -7,6 +7,7 @@ Copyright end
 import ipaddress, json, time, requests, math
 from connectors.core.connector import get_logger, ConnectorError
 from .constants import rest_api
+from connectors.core.utils import update_connnector_config
 
 logger = get_logger('checkpoint-firewall')
 
@@ -18,8 +19,12 @@ def get_input(params, key, type):
             if isinstance(ret_val, type):
                 return ret_val
             else:
-                logger.info("Parameter Input Type is Invalid: Parameter is: {0}, Required Parameter Type is: {1}".format(str(key), str(type)))
-                raise ConnectorError("Parameter Input Type is Invalid: Parameter is: {0}, Required Parameter Type is: {1}".format(str(key), str(type)))
+                logger.info(
+                    "Parameter Input Type is Invalid: Parameter is: {0}, Required Parameter Type is: {1}".format(
+                        str(key), str(type)))
+                raise ConnectorError(
+                    "Parameter Input Type is Invalid: Parameter is: {0}, Required Parameter Type is: {1}".format(
+                        str(key), str(type)))
         else:
             if ret_val == 0 or ret_val == [] or ret_val == {}:
                 return ret_val
@@ -29,7 +34,7 @@ def get_input(params, key, type):
 
 
 class CheckPointOps:
-    def __init__(self, config):
+    def __init__(self, config, connector_info):
         self.verify_ssl = config.get("verify_ssl", None)
         address = get_input(config, "address", str)
         port = get_input(config, "port", int)
@@ -42,12 +47,14 @@ class CheckPointOps:
         if server_url[:7] != 'http://' and server_url[:8] != 'https://':
             server_url = 'https://{}'.format(str(server_url))
         self.server_url = server_url
-        self.session = None
+        self.session = config.get("session")
         self.status = {}
         self.install_policy = config.get("install_policy", True)
         self.policy_package = config.get("policy_package") if config.get("policy_package") else "Standard"
         self.domain = config.get("domain")
         self.session_details = config.get('session_details')
+        self.connector_info = connector_info
+        self.connector_config = config
 
     def __check_show_task(self, task_id):
         try:
@@ -136,9 +143,9 @@ class CheckPointOps:
                     api_response = json.loads(api_response.content.decode('utf-8'))
                 else:
                     logger.info('Fail To request API {0} response is : {1}'.format(str(url), str(api_response.content)))
-                    raise ConnectorError(
-                        'Fail To request API {0} response is : {1}'.format(str(url), str(api_response.content)))
-            else:
+
+                    self.session = None
+            if not self.session:
                 url = '{0}{1}'.format(self.server_url, rest_api["LOGIN_API"])
                 payload = {'user': self.username, 'password': self.password}
                 if self.domain:
@@ -161,6 +168,10 @@ class CheckPointOps:
                     self.session = self.session
                 else:
                     self.session = api_response
+                self.connector_config = self.session
+                self.config = update_connnector_config(self.connector_info['connector_name'],
+                                                       self.connector_info['connector_version'],
+                                                       self.connector_config, self.connector_config['config_id'])
             except Exception:
                 self.sid = None
                 logger.info('Sid Not Found. Invalid Username, Password or Domain')
@@ -388,7 +399,6 @@ class CheckPointOps:
         except Exception as Err:
             logger.exception("Fail: {}".format(str(Err)))
             raise ConnectorError(Err)
-
 
     def discard_session(self, config, params):
         try:
