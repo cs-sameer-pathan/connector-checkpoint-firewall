@@ -134,6 +134,7 @@ class CheckPointOps:
 
     def __set_sid(self):
         try:
+            session_regenerated = False
             if self.session:
                 url = '{0}{1}'.format(self.server_url, rest_api["KEEPALIVE_SESSION"])
                 header = {'content-Type': 'application/json', 'X-chkp-sid': self.session["sid"]}
@@ -143,7 +144,6 @@ class CheckPointOps:
                     api_response = json.loads(api_response.content.decode('utf-8'))
                 else:
                     logger.info('Fail To request API {0} response is : {1}'.format(str(url), str(api_response.content)))
-
                     self.session = None
             if not self.session:
                 url = '{0}{1}'.format(self.server_url, rest_api["LOGIN_API"])
@@ -156,6 +156,7 @@ class CheckPointOps:
                 api_response = requests.post(url, data=json.dumps(payload), headers=header, verify=self.verify_ssl)
                 if api_response.ok:
                     try:
+                        session_regenerated = True
                         api_response = json.loads(api_response.content.decode('utf-8'))
                     except:
                         raise ConnectorError(api_response.content.decode('utf-8'))
@@ -168,10 +169,12 @@ class CheckPointOps:
                     self.session = self.session
                 else:
                     self.session = api_response
-                self.connector_config = self.session
-                self.config = update_connnector_config(self.connector_info['connector_name'],
-                                                       self.connector_info['connector_version'],
-                                                       self.connector_config, self.connector_config['config_id'])
+                if session_regenerated:
+                    self.connector_config['session'] = self.session
+                    self.connector_config = update_connnector_config(self.connector_info['connector_name'],
+                                                                     self.connector_info['connector_version'],
+                                                                     self.connector_config,
+                                                                     self.connector_config['config_id'])
             except Exception:
                 self.sid = None
                 logger.info('Sid Not Found. Invalid Username, Password or Domain')
