@@ -1,7 +1,7 @@
 """
 Copyright start
 MIT License
-Copyright (c) 2024 Fortinet Inc
+Copyright (c) 2025 Fortinet Inc
 Copyright end
 """
 from connectors.core.connector import Connector, get_logger, ConnectorError
@@ -46,6 +46,3 @@ class CheckPoint(Connector):
                           "connector_version": self._info_json.get('version')}
         checkpoint = CheckPointOps(config, connector_info)
         return checkpoint.check_health()
-
-
-
